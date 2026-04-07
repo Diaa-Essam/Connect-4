@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'model/Board.dart';
 
 void main() {
+  Board board = Board();
+  board.dropPiece(1, 1);
+  board.printBoard();
   runApp(const MyApp());
 }
 
