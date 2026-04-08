@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'model/Board.dart';
+import 'model/board.dart';
 
 void main() {
   Board board = Board();

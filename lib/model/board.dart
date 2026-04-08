@@ -19,6 +19,13 @@ class Board {
     return false;
   }
 
+  bool checkWin(int player) {
+    return checkHorizontalWin(player) ||
+        checkVerticalWin(player) ||
+        checkDiagonalDownLeftWin(player) ||
+        checkDiagonalDownRightWin(player);
+  }
+
   bool checkHorizontalWin(int player) {
     for (int row = 0; row < grid.length; row++) {
       for (int col = 0; col < grid[0].length - 3; col++) {
@@ -29,7 +36,7 @@ class Board {
             break;
           }
         }
-        if (win == true) return true;
+        if (win) return true;
       }
     }
 
@@ -46,7 +53,7 @@ class Board {
             break;
           }
         }
-        if (win == true) return true;
+        if (win) return true;
       }
     }
 
@@ -63,7 +70,7 @@ class Board {
             break;
           }
         }
-        if (win == true) return true;
+        if (win) return true;
       }
     }
     return false;
@@ -79,7 +86,7 @@ class Board {
             break;
           }
         }
-        if (win == true) return true;
+        if (win) return true;
       }
     }
     return false;
