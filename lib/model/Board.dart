@@ -52,4 +52,20 @@ class Board {
 
     return false;
   }
+
+  bool checkDiagonalDownRightWin(int player) {
+    for (int row = 0; row < grid.length - 3; row++) {
+      for (int col = 0; col < grid[0].length - 3; col++) {
+        bool win = true;
+        for (int k = 0; k < 4; k++) {
+          if (grid[row + k][col + k] != player) {
+            win = false;
+            break;
+          }
+        }
+        if (win == true) return true;
+      }
+    }
+    return false;
+  }
 }
