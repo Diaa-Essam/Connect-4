@@ -20,11 +20,28 @@ class Board {
   }
 
   bool checkHorizontalWin(int player) {
-    for (int i = 0; i < grid.length; i++) {
-      for (int j = 0; j < grid[0].length - 3; j++) {
+    for (int row = 0; row < grid.length; row++) {
+      for (int col = 0; col < grid[0].length - 3; col++) {
         bool win = true;
         for (int k = 0; k < 4; k++) {
-          if (grid[i][j + k] != player) {
+          if (grid[row][col + k] != player) {
+            win = false;
+            break;
+          }
+        }
+        if (win == true) return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool checkVerticalWin(int player) {
+    for (int col = 0; col < grid[0].length; col++) {
+      for (int row = 0; row < grid.length - 3; row++) {
+        bool win = true;
+        for (int k = 0; k < 4; k++) {
+          if (grid[row + k][col] != player) {
             win = false;
             break;
           }
