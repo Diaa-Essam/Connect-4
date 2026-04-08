@@ -18,4 +18,21 @@ class Board {
     }
     return false;
   }
+
+  bool checkHorizontalWin(int player) {
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length - 3; j++) {
+        bool win = true;
+        for (int k = 0; k < 4; k++) {
+          if (grid[i][j + k] != player) {
+            win = false;
+            break;
+          }
+        }
+        if (win == true) return true;
+      }
+    }
+
+    return false;
+  }
 }
