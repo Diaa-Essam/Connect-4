@@ -13,43 +13,52 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: AspectRatio(
-          aspectRatio: 7 / 6,
-          child: GridView.builder(
-            itemCount: 42,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-            ),
-            itemBuilder: (context, index) {
-              int row = index ~/ 7;
-              int col = index % 7;
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              Text("Player: ${controller.currentPlayer}"),
+              Expanded(
+                child: AspectRatio(
+                  aspectRatio: 7 / 6,
+                  child: GridView.builder(
+                    itemCount: 42,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                    ),
+                    itemBuilder: (context, index) {
+                      int row = index ~/ 7;
+                      int col = index % 7;
 
-              int cell = controller.board.grid[row][col];
+                      int cell = controller.board.grid[row][col];
 
-              Color color;
-              if (cell == 1) {
-                color = Colors.red;
-              } else if (cell == 2) {
-                color = Colors.yellow;
-              } else {
-                color = Colors.grey;
-              }
-              return GestureDetector(
-                onTap: () {
-                  controller.makeMove(col);
-                  setState(() {});
-                },
-                child: Container(
-                  margin: EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color,
+                      Color color;
+                      if (cell == 1) {
+                        color = Colors.red;
+                      } else if (cell == 2) {
+                        color = Colors.yellow;
+                      } else {
+                        color = Colors.grey;
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          controller.makeMove(col);
+                          setState(() {});
+                        },
+                        child: Container(
+                          margin: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: color,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
       ),
