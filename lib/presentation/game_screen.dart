@@ -32,9 +32,15 @@ class _GameScreenState extends State<GameScreen> {
           } else {
             color = Colors.grey;
           }
-          return Container(
-            margin: EdgeInsets.all(4),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+          return GestureDetector(
+            onTap: () {
+              controller.makeMove(col);
+              setState(() {});
+            },
+            child: Container(
+              margin: EdgeInsets.all(4),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+            ),
           );
         },
       ),
