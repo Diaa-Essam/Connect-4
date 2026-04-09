@@ -1,9 +1,14 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:flutter/material.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends StatefulWidget {
+  const GameScreen({super.key});
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
   final GameController controller = GameController();
-  GameScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
