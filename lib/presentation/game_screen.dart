@@ -18,7 +18,9 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
             children: [
               Text(
-                "Player: ${controller.currentPlayer}",
+                controller.winner == null
+                    ? "Player: ${controller.currentPlayer}"
+                    : "Player ${controller.winner} Wins !",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Expanded(
@@ -61,6 +63,21 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ),
+
+              SizedBox(height: 10),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text("Reset Game"),
+                onPressed: () {
+                  controller.resetGame();
+                  setState(() {});
+                },
+              ),
+              SizedBox(height: 10),
             ],
           ),
         ),
