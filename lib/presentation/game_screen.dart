@@ -17,12 +17,14 @@ class _GameScreenState extends State<GameScreen> {
         child: Center(
           child: Column(
             children: [
+              SizedBox(height: 20),
               Text(
                 controller.winner == null
-                    ? "Player: ${controller.currentPlayer}"
+                    ? "Player ${controller.currentPlayer}'s Turn"
                     : "Player ${controller.winner} Wins !",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
+              SizedBox(height: 10),
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 7 / 6,
@@ -30,6 +32,13 @@ class _GameScreenState extends State<GameScreen> {
                     padding: EdgeInsets.all(8),
                     margin: EdgeInsets.all(6),
                     decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
                       color: Colors.blue.shade700,
                       borderRadius: BorderRadius.circular(16),
                     ),
