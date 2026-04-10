@@ -17,7 +17,10 @@ class _GameScreenState extends State<GameScreen> {
         child: Center(
           child: Column(
             children: [
-              Text("Player: ${controller.currentPlayer}"),
+              Text(
+                "Player: ${controller.currentPlayer}",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 7 / 6,
