@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:connect_four/model/board.dart';
 
 class GameController {
@@ -26,5 +28,27 @@ class GameController {
     board = Board();
     currentPlayer = 1;
     winner = null;
+  }
+
+  //1217. Minimum Cost to Move Chips to The Same Position
+  int minCostToMoveChips(List<int> position) {
+    int even = 0, odd = 0;
+    for (int val in position) {
+      if (val % 2 == 0) {
+        even++;
+      } else {
+        odd++;
+      }
+    }
+    return min(even, odd);
+  }
+
+  //136. Single Number
+  int singleNumber(List<int> nums) {
+    int result = 0;
+    for (int num in nums) {
+      result ^= num;
+    }
+    return result;
   }
 }
