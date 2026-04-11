@@ -25,7 +25,7 @@ class _GameScreenState extends State<GameScreen> {
                     controller.winner == null ? "Turn: " : "Winner: ",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
-
+                  SizedBox(width: 10),
                   CircleAvatar(
                     radius: 12,
                     backgroundColor: controller.winner != null
@@ -39,6 +39,7 @@ class _GameScreenState extends State<GameScreen> {
                 ],
               ),
               SizedBox(height: 10),
+
               Expanded(
                 child: AspectRatio(
                   aspectRatio: 7 / 6,
@@ -48,9 +49,9 @@ class _GameScreenState extends State<GameScreen> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
                         ),
                       ],
                       color: Colors.blue.shade700,
@@ -76,16 +77,26 @@ class _GameScreenState extends State<GameScreen> {
                         } else {
                           color = Colors.white;
                         }
-                        return GestureDetector(
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(50),
+
                           onTap: () {
                             controller.makeMove(col);
                             setState(() {});
                           },
-                          child: Container(
-                            margin: EdgeInsets.all(4),
+                          child: AnimatedContainer(
+                            duration: Duration(milliseconds: 200),
+                            margin: EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: color,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 3,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
                             ),
                           ),
                         );
