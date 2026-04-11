@@ -18,11 +18,25 @@ class _GameScreenState extends State<GameScreen> {
           child: Column(
             children: [
               SizedBox(height: 20),
-              Text(
-                controller.winner == null
-                    ? "Player ${controller.currentPlayer}'s Turn"
-                    : "Player ${controller.winner} Wins !",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    controller.winner == null ? "Turn: " : "Winner: ",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundColor: controller.winner != null
+                        ? controller.winner == 1
+                              ? Colors.red
+                              : Colors.yellow
+                        : controller.currentPlayer == 1
+                        ? Colors.red
+                        : Colors.yellow,
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               Expanded(
