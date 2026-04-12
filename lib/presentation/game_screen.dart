@@ -13,6 +13,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       body: SafeArea(
         child: Center(
           child: Column(
@@ -22,12 +23,12 @@ class _GameScreenState extends State<GameScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    controller.winner == null ? "Turn: " : "Winner: ",
+                    controller.winner == null ? "TURN" : "WINNER",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   SizedBox(width: 10),
                   CircleAvatar(
-                    radius: 12,
+                    radius: 10,
                     backgroundColor: controller.winner != null
                         ? controller.winner == 1
                               ? Colors.red
@@ -49,9 +50,9 @@ class _GameScreenState extends State<GameScreen> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
+                          color: Colors.black26,
+                          blurRadius: 20,
+                          offset: Offset(0, 5),
                         ),
                       ],
                       color: Colors.blue.shade700,
@@ -85,7 +86,7 @@ class _GameScreenState extends State<GameScreen> {
                             setState(() {});
                           },
                           child: AnimatedContainer(
-                            duration: Duration(milliseconds: 200),
+                            duration: Duration(milliseconds: 100),
                             margin: EdgeInsets.all(6),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -110,10 +111,18 @@ class _GameScreenState extends State<GameScreen> {
 
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 4,
                   backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
                 ),
-                child: Text("Reset Game"),
+                child: Text(
+                  "Play Again",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
                 onPressed: () {
                   controller.resetGame();
                   setState(() {});
