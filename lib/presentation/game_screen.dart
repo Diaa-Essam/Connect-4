@@ -25,20 +25,25 @@ class _GameScreenState extends State<GameScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    controller.winner == null ? "TURN" : "WINNER",
+                    controller.isDraw
+                        ? "DRAW"
+                        : controller.winner == null
+                        ? "TURN"
+                        : "WINNER",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   SizedBox(width: 10),
-                  CircleAvatar(
-                    radius: 10,
-                    backgroundColor: controller.winner != null
-                        ? controller.winner == 1
-                              ? Colors.red
-                              : Colors.yellow
-                        : controller.currentPlayer == 1
-                        ? Colors.red
-                        : Colors.yellow,
-                  ),
+                  if (!controller.isDraw)
+                    CircleAvatar(
+                      radius: 10,
+                      backgroundColor: controller.winner != null
+                          ? controller.winner == 1
+                                ? Colors.red
+                                : Colors.yellow
+                          : controller.currentPlayer == 1
+                          ? Colors.red
+                          : Colors.yellow,
+                    ),
                 ],
               ),
               SizedBox(height: 10),
