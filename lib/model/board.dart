@@ -22,76 +22,100 @@ class Board {
     return false;
   }
 
-  bool checkWin(int player) {
-    return checkHorizontalWin(player) ||
-        checkVerticalWin(player) ||
-        checkDiagonalDownLeftWin(player) ||
+  List<List<int>>? checkWin(int player) {
+    return checkHorizontalWin(player) ??
+        checkVerticalWin(player) ??
+        checkDiagonalDownLeftWin(player) ??
         checkDiagonalDownRightWin(player);
   }
 
-  bool checkHorizontalWin(int player) {
+  List<List<int>>? checkHorizontalWin(int player) {
     for (int row = 0; row < grid.length; row++) {
       for (int col = 0; col < grid[0].length - 3; col++) {
-        bool win = true;
+        bool allMatch = true;
         for (int k = 0; k < 4; k++) {
           if (grid[row][col + k] != player) {
-            win = false;
+            allMatch = false;
             break;
           }
         }
-        if (win) return true;
+
+        if (allMatch) {
+          List<List<int>> positions = [];
+          for (int k = 0; k < 4; k++) {
+            positions.add([row, col + k]);
+          }
+          return positions;
+        }
       }
     }
-
-    return false;
+    return null;
   }
 
-  bool checkVerticalWin(int player) {
+  List<List<int>>? checkVerticalWin(int player) {
     for (int col = 0; col < grid[0].length; col++) {
       for (int row = 0; row < grid.length - 3; row++) {
-        bool win = true;
+        bool allMatch = true;
         for (int k = 0; k < 4; k++) {
           if (grid[row + k][col] != player) {
-            win = false;
+            allMatch = false;
             break;
           }
         }
-        if (win) return true;
+        if (allMatch) {
+          List<List<int>> positions = [];
+          for (int k = 0; k < 4; k++) {
+            positions.add([row + k, col]);
+          }
+          return positions;
+        }
       }
     }
 
-    return false;
+    return null;
   }
 
-  bool checkDiagonalDownRightWin(int player) {
+  List<List<int>>? checkDiagonalDownRightWin(int player) {
     for (int row = 0; row < grid.length - 3; row++) {
       for (int col = 0; col < grid[0].length - 3; col++) {
-        bool win = true;
+        bool allMatch = true;
         for (int k = 0; k < 4; k++) {
           if (grid[row + k][col + k] != player) {
-            win = false;
+            allMatch = false;
             break;
           }
         }
-        if (win) return true;
+        if (allMatch) {
+          List<List<int>> positions = [];
+          for (int k = 0; k < 4; k++) {
+            positions.add([row + k, col + k]);
+          }
+          return positions;
+        }
       }
     }
-    return false;
+    return null;
   }
 
-  bool checkDiagonalDownLeftWin(int player) {
+  List<List<int>>? checkDiagonalDownLeftWin(int player) {
     for (int row = 0; row < grid.length - 3; row++) {
       for (int col = 3; col < grid[0].length; col++) {
-        bool win = true;
+        bool allMatch = true;
         for (int k = 0; k < 4; k++) {
           if (grid[row + k][col - k] != player) {
-            win = false;
+            allMatch = false;
             break;
           }
         }
-        if (win) return true;
+        if (allMatch) {
+          List<List<int>> positions = [];
+          for (int k = 0; k < 4; k++) {
+            positions.add([row + k, col - k]);
+          }
+          return positions;
+        }
       }
     }
-    return false;
+    return null;
   }
 }

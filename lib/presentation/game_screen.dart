@@ -10,6 +10,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   final GameController controller = GameController();
+
   int? pressedIndex;
 
   @override
@@ -76,9 +77,12 @@ class _GameScreenState extends State<GameScreen> {
                         int col = index % 7;
 
                         int cell = controller.board.grid[row][col];
+                        bool isWinnigCell = controller.isWinnigCell(row, col);
 
                         Color color;
-                        if (cell == 1) {
+                        if (isWinnigCell) {
+                          color = Colors.green;
+                        } else if (cell == 1) {
                           color = Colors.red;
                         } else if (cell == 2) {
                           color = Colors.yellow;

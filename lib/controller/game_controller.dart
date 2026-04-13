@@ -2,6 +2,7 @@ import 'package:connect_four/model/board.dart';
 
 class GameController {
   Board board = Board();
+  List<List<int>> winningCells = [];
   int currentPlayer = 1;
   int? winner;
   bool isDraw = false;
@@ -15,8 +16,10 @@ class GameController {
     if (!success) return false;
 
     if (success) {
-      if (board.checkWin(currentPlayer)) {
+      final result = board.checkWin(currentPlayer);
+      if (result != null) {
         winner = currentPlayer;
+        winningCells = result;
       } else if (board.isBoardFull()) {
         isDraw = true;
       }
@@ -25,10 +28,18 @@ class GameController {
     return true;
   }
 
+  bool isWinnigCell(int row, int col) {
+    for (List<int> list in winningCells) {
+      if (list[0] == row && list[1] == col) return true;
+    }
+    return false;
+  }
+
   void resetGame() {
     board = Board();
     currentPlayer = 1;
     winner = null;
     isDraw = false;
+    winningCells = [];
   }
 }
