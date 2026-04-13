@@ -1,5 +1,6 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -82,7 +83,10 @@ class _GameScreenState extends State<GameScreen> {
                         return InkWell(
                           borderRadius: BorderRadius.circular(50),
 
-                          onTap: () {
+                          onTap: () async {
+                            HapticFeedback.heavyImpact();
+                            HapticFeedback.vibrate();
+                            await Future.delayed(Duration(milliseconds: 80));
                             controller.makeMove(col);
                             setState(() {});
                           },

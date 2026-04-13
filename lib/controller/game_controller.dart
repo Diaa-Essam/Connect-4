@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:connect_four/model/board.dart';
 
 class GameController {
   Board board = Board();
   int currentPlayer = 1;
   int? winner;
+  bool isDraw = false;
 
   // Should this function return boolean or void?
   bool makeMove(int column) {
@@ -18,6 +17,8 @@ class GameController {
     if (success) {
       if (board.checkWin(currentPlayer)) {
         winner = currentPlayer;
+      } else if (board.isBoardFull()) {
+        isDraw = true;
       }
       currentPlayer = (currentPlayer == 1) ? 2 : 1;
     }
@@ -28,27 +29,6 @@ class GameController {
     board = Board();
     currentPlayer = 1;
     winner = null;
-  }
-
-  //1217. Minimum Cost to Move Chips to The Same Position
-  int minCostToMoveChips(List<int> position) {
-    int even = 0, odd = 0;
-    for (int val in position) {
-      if (val % 2 == 0) {
-        even++;
-      } else {
-        odd++;
-      }
-    }
-    return min(even, odd);
-  }
-
-  //136. Single Number
-  int singleNumber(List<int> nums) {
-    int result = 0;
-    for (int num in nums) {
-      result ^= num;
-    }
-    return result;
+    isDraw = false;
   }
 }

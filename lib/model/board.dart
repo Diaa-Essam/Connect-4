@@ -2,10 +2,13 @@ class Board {
   List<List<int>> grid;
   Board() : grid = List.generate(6, (_) => List.filled(7, 0));
 
-  void printBoard() {
-    for (int i = 0; i < grid.length; i++) {
-      print("Row: ${i + 1}: ${grid[i]}");
+  bool isBoardFull() {
+    for (int col = 0; col < grid[0].length; col++) {
+      if (grid[0][col] == 0) {
+        return false;
+      }
     }
+    return true;
   }
 
   bool dropPiece(int column, int player) {
