@@ -9,6 +9,7 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   final GameController controller = GameController();
+  int? pressedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,6 @@ class _GameScreenState extends State<GameScreen> {
                         crossAxisCount: 7,
                       ),
                       itemBuilder: (context, index) {
-                        int? pressedIndex;
                         int row = index ~/ 7;
                         int col = index % 7;
 
