@@ -65,6 +65,7 @@ class _GameScreenState extends State<GameScreen> {
                         crossAxisCount: 7,
                       ),
                       itemBuilder: (context, index) {
+                        int? pressedIndex;
                         int row = index ~/ 7;
                         int col = index % 7;
 
@@ -85,19 +86,38 @@ class _GameScreenState extends State<GameScreen> {
                             controller.makeMove(col);
                             setState(() {});
                           },
-                          child: AnimatedContainer(
+                          onTapDown: (_) {
+                            setState(() {
+                              pressedIndex = index;
+                            });
+                          },
+                          onTapUp: (_) {
+                            setState(() {
+                              pressedIndex = null;
+                            });
+                          },
+                          onTapCancel: () {
+                            setState(() {
+                              pressedIndex = null;
+                            });
+                          },
+                          child: AnimatedScale(
+                            scale: pressedIndex == index ? 0.85 : 1,
                             duration: Duration(milliseconds: 100),
-                            margin: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: color,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 3,
-                                  offset: Offset(0, 1),
-                                ),
-                              ],
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 100),
+                              margin: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: color,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 3,
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
