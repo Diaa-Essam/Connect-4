@@ -1,4 +1,5 @@
 import 'package:connect_four/model/board.dart';
+import 'package:connect_four/controller/ai_controller.dart';
 
 class GameController {
   Board board = Board();
@@ -6,8 +7,9 @@ class GameController {
   int currentPlayer = 1;
   int? winner;
   bool isDraw = false;
+  final AiController _ai = AiController();
+  bool isAiEnabled = true;
 
-  // Should this function return boolean or void?
   bool makeMove(int column) {
     if (winner != null) return false;
 
@@ -22,8 +24,14 @@ class GameController {
         winningCells = result;
       } else if (board.isBoardFull()) {
         isDraw = true;
+      } else {
+        currentPlayer = (currentPlayer == 1) ? 2 : 1;
       }
-      currentPlayer = (currentPlayer == 1) ? 2 : 1;
+
+      if (isAiEnabled && currentPlayer == 2 && winner == null && !isDraw) {
+        final aiCol = _ai.getBestMove(board);
+        makeMove(aiCol);
+      }
     }
     return true;
   }
