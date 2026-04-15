@@ -10,7 +10,7 @@ class GameController {
   final AiController _ai = AiController();
   bool isAiEnabled = true;
 
-  Future makeMove(int column) async {
+  Future<bool> makeMove(int column) async {
     if (winner != null) return false;
 
     bool success = board.dropPiece(column, currentPlayer);
@@ -27,14 +27,15 @@ class GameController {
       } else {
         currentPlayer = (currentPlayer == 1) ? 2 : 1;
       }
-
-      if (isAiEnabled && currentPlayer == 2 && winner == null && !isDraw) {
-        await Future.delayed(Duration(milliseconds: 400));
-        final aiCol = _ai.getBestMove(board);
-        await makeMove(aiCol);
-      }
     }
     return true;
+  }
+
+  Future<void> makeAiMove() async {
+    if (!isAiEnabled || currentPlayer != 2 || winner != null || isDraw) return;
+    await Future.delayed(Duration(milliseconds: 400));
+    final aiCol = _ai.getBestMove(board);
+    await makeMove(aiCol);
   }
 
   bool isWinnigCell(int row, int col) {
