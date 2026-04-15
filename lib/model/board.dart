@@ -2,6 +2,14 @@ class Board {
   List<List<int>> grid;
   Board() : grid = List.generate(6, (_) => List.filled(7, 0));
 
+  Board clone() {
+    Board newBoard = Board();
+    for (int i = 0; i < grid.length; i++) {
+      newBoard.grid[i] = List.from(grid[i]);
+    }
+    return newBoard;
+  }
+
   bool isBoardFull() {
     for (int col = 0; col < grid[0].length; col++) {
       if (grid[0][col] == 0) {

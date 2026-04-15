@@ -22,9 +22,9 @@ class AiController {
         continue;
       }
 
-      board.dropPiece(col, 2);
-      int score = minimax(board, 5, false);
-      _undoMove(board, col);
+      Board tempBoard = board.clone();
+      tempBoard.dropPiece(col, 2);
+      int score = minimax(tempBoard, 5, false);
 
       if (score > bestScore) {
         bestScore = score;
@@ -43,29 +43,21 @@ class AiController {
       int best = -999999;
       for (int col = 0; col < board.grid[0].length; col++) {
         if (board.grid[0][col] != 0) continue;
-        board.dropPiece(col, 2);
+
+        Board tempBoard = board.clone();
+        tempBoard.dropPiece(col, 2);
         best = max(best, minimax(board, depth - 1, false));
-        _undoMove(board, col);
       }
       return best;
     } else {
       int best = 999999;
       for (int col = 0; col < board.grid[0].length; col++) {
         if (board.grid[0][col] != 0) continue;
-        board.dropPiece(col, 1);
+        Board tempBoard = board.clone();
+        tempBoard.dropPiece(col, 1);
         best = min(best, minimax(board, depth - 1, true));
-        _undoMove(board, col);
       }
       return best;
-    }
-  }
-
-  void _undoMove(Board board, int col) {
-    for (int row = board.grid.length - 1; row >= 0; row--) {
-      if (board.grid[row][col] != 0) {
-        board.grid[row][col] = 0;
-        return;
-      }
     }
   }
 }
