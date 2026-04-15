@@ -93,10 +93,7 @@ class _GameScreenState extends State<GameScreen> {
                           borderRadius: BorderRadius.circular(50),
 
                           onTap: () async {
-                            HapticFeedback.heavyImpact();
-                            HapticFeedback.vibrate();
-                            await Future.delayed(Duration(milliseconds: 80));
-                            controller.makeMove(col);
+                            await controller.makeMove(col);
                             setState(() {});
                           },
                           onTapDown: (_) {
