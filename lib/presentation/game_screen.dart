@@ -42,6 +42,7 @@ class _GameScreenState extends State<GameScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
+                        color: Colors.white,
                       ),
                     ),
                     SizedBox(width: 10),
@@ -125,6 +126,17 @@ class _GameScreenState extends State<GameScreen> {
                                   shape: BoxShape.circle,
                                   color: color,
                                   boxShadow: [
+                                    if (cell != 0)
+                                      BoxShadow(
+                                        color:
+                                            (cell == 1
+                                                    ? Colors.red
+                                                    : Colors.yellow)
+                                                .withOpacity(0.6),
+                                        blurRadius: 12,
+                                        spreadRadius: 2,
+                                      ),
+
                                     BoxShadow(
                                       color: Colors.black12,
                                       blurRadius: 3,
