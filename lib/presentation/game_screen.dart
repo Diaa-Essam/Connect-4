@@ -12,6 +12,7 @@ class _GameScreenState extends State<GameScreen> {
   final GameController controller = GameController();
 
   int? pressedIndex;
+  int? dropppingColumn;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +107,10 @@ class _GameScreenState extends State<GameScreen> {
 
                             onTap: () async {
                               if (controller.currentPlayer != 1) return;
+                              setState(() {
+                                pressedIndex = null;
+                                dropppingColumn = col;
+                              });
                               await controller.makeMove(col);
                               setState(() {});
                               await controller.makeAiMove();
@@ -114,6 +119,16 @@ class _GameScreenState extends State<GameScreen> {
                             onTapDown: (_) {
                               setState(() {
                                 pressedIndex = index;
+                              });
+                            },
+                            onTapUp: (_) {
+                              setState(() {
+                                pressedIndex = null;
+                              });
+                            },
+                            onTapCancel: () {
+                              setState(() {
+                                pressedIndex = null;
                               });
                             },
                             child: AnimatedScale(
