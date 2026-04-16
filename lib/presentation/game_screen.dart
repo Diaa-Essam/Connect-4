@@ -115,16 +115,6 @@ class _GameScreenState extends State<GameScreen> {
                                 pressedIndex = index;
                               });
                             },
-                            onTapUp: (_) {
-                              setState(() {
-                                pressedIndex = null;
-                              });
-                            },
-                            onTapCancel: () {
-                              setState(() {
-                                pressedIndex = null;
-                              });
-                            },
                             child: AnimatedScale(
                               scale: pressedIndex == index ? 0.85 : 1,
                               duration: Duration(milliseconds: 100),
