@@ -46,7 +46,7 @@ class AiController {
 
         Board tempBoard = board.clone();
         tempBoard.dropPiece(col, 2);
-        best = max(best, minimax(board, depth - 1, false));
+        best = max(best, minimax(tempBoard, depth - 1, false));
       }
       return best;
     } else {
@@ -55,7 +55,7 @@ class AiController {
         if (board.grid[0][col] != 0) continue;
         Board tempBoard = board.clone();
         tempBoard.dropPiece(col, 1);
-        best = min(best, minimax(board, depth - 1, true));
+        best = min(best, minimax(tempBoard, depth - 1, true));
       }
       return best;
     }

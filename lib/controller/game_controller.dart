@@ -17,17 +17,16 @@ class GameController {
 
     if (!success) return false;
 
-    if (success) {
-      final result = board.checkWin(currentPlayer);
-      if (result != null) {
-        winner = currentPlayer;
-        winningCells = result;
-      } else if (board.isBoardFull()) {
-        isDraw = true;
-      } else {
-        currentPlayer = (currentPlayer == 1) ? 2 : 1;
-      }
+    final result = board.checkWin(currentPlayer);
+    if (result != null) {
+      winner = currentPlayer;
+      winningCells = result;
+    } else if (board.isBoardFull()) {
+      isDraw = true;
+    } else {
+      currentPlayer = (currentPlayer == 1) ? 2 : 1;
     }
+
     return true;
   }
 

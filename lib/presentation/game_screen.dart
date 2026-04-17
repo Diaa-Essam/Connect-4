@@ -12,7 +12,7 @@ class _GameScreenState extends State<GameScreen> {
   final GameController controller = GameController();
 
   int? pressedIndex;
-  int? dropppingColumn;
+  int? droppingColumn;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,9 @@ class _GameScreenState extends State<GameScreen> {
                         color: Colors.white,
                       ),
                     ),
+
                     SizedBox(width: 10),
+
                     if (!controller.isDraw)
                       CircleAvatar(
                         radius: 10,
@@ -109,7 +111,7 @@ class _GameScreenState extends State<GameScreen> {
                               if (controller.currentPlayer != 1) return;
                               setState(() {
                                 pressedIndex = null;
-                                dropppingColumn = col;
+                                droppingColumn = col;
                               });
                               await controller.makeMove(col);
                               setState(() {});
