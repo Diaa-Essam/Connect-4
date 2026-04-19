@@ -10,6 +10,15 @@ class Board {
     return newBoard;
   }
 
+  int getAvailableRow(int column) {
+    for (int row = grid.length - 1; row >= 0; row--) {
+      if (grid[row][column] == 0) {
+        return row;
+      }
+    }
+    return -1;
+  }
+
   bool isBoardFull() {
     for (int col = 0; col < grid[0].length; col++) {
       if (grid[0][col] == 0) {

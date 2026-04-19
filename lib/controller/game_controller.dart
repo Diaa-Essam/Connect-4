@@ -10,6 +10,9 @@ class GameController {
   final AiController _ai = AiController();
   bool isAiEnabled = true;
 
+  int scorePlayer1 = 0;
+  int scorePlayer2 = 0;
+
   Future<bool> makeMove(int column) async {
     if (winner != null) return false;
 
