@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../model/game_mode.dart';
+import 'game_screen.dart';
 
 class ModeSelectionScreen extends StatelessWidget {
   const ModeSelectionScreen({super.key});
@@ -12,11 +14,28 @@ class ModeSelectionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GameScreen(mode: GameMode.singlePlayer),
+                  ),
+                );
+              },
               child: const Text("Single Player"),
             ),
             SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: const Text("Two Players")),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GameScreen(mode: GameMode.twoPlayers),
+                  ),
+                );
+              },
+              child: const Text("Two Players"),
+            ),
           ],
         ),
       ),

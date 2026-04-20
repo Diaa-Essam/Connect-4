@@ -1,9 +1,11 @@
 import 'package:connect_four/controller/game_controller.dart';
+import 'package:connect_four/model/game_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  final GameMode mode;
+  const GameScreen({super.key, required this.mode});
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
