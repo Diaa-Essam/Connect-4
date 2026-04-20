@@ -111,16 +111,18 @@ class _GameScreenState extends State<GameScreen> {
                             borderRadius: BorderRadius.circular(50),
 
                             onTap: () async {
-                              if (controller.currentPlayer != 1) return;
                               setState(() {
                                 pressedIndex = null;
                                 droppingColumn = col;
                               });
+
                               await controller.makeMove(col);
                               setState(() {});
+
                               if (GameMode.singlePlayer == widget.mode) {
                                 await controller.makeAiMove();
                               }
+                              setState(() {});
                             },
                             onTapDown: (_) {
                               setState(() {
