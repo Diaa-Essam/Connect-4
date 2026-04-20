@@ -1,5 +1,6 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:connect_four/model/game_mode.dart';
+import 'package:connect_four/presentation/mode_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -117,8 +118,9 @@ class _GameScreenState extends State<GameScreen> {
                               });
                               await controller.makeMove(col);
                               setState(() {});
-                              await controller.makeAiMove();
-                              setState(() {});
+                              if (GameMode.singlePlayer == widget.mode) {
+                                await controller.makeAiMove();
+                              }
                             },
                             onTapDown: (_) {
                               setState(() {
