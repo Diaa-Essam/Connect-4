@@ -38,6 +38,14 @@ class _GameScreenState extends State<GameScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
+                      widget.mode == GameMode.singlePlayer
+                          ? "Single Player"
+                          : "Two Players",
+
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
                       controller.isDraw
                           ? "DRAW"
                           : controller.winner == null
