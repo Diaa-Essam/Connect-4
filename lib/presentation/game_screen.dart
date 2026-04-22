@@ -121,6 +121,10 @@ class _GameScreenState extends State<GameScreen> {
                             borderRadius: BorderRadius.circular(50),
 
                             onTap: () async {
+                              if (widget.mode == GameMode.singlePlayer &&
+                                  controller.currentPlayer != 1)
+                                return;
+
                               setState(() {
                                 pressedIndex = null;
                                 droppingColumn = col;
