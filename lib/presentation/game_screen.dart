@@ -1,8 +1,6 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:connect_four/model/game_mode.dart';
-import 'package:connect_four/presentation/mode_selection_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class GameScreen extends StatefulWidget {
   final GameMode mode;
@@ -39,8 +37,8 @@ class _GameScreenState extends State<GameScreen> {
                   children: [
                     Text(
                       widget.mode == GameMode.singlePlayer
-                          ? "Single Player"
-                          : "Two Players",
+                          ? "Single Player "
+                          : "Two Players ",
 
                       style: TextStyle(color: Colors.white70, fontSize: 16),
                     ),
@@ -48,9 +46,13 @@ class _GameScreenState extends State<GameScreen> {
                     Text(
                       controller.isDraw
                           ? "DRAW"
-                          : controller.winner == null
-                          ? "TURN"
-                          : "WINNER",
+                          : controller.winner != null
+                          ? "WINNER"
+                          : widget.mode == GameMode.singlePlayer
+                          ? (controller.currentPlayer == 1 ? "PLAYER" : "AI")
+                          : (controller.currentPlayer == 2
+                                ? "PLAYER 1"
+                                : "PLAYER 2"),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
