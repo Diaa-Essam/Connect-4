@@ -134,6 +134,9 @@ class _GameScreenState extends State<GameScreen> {
                               setState(() {});
 
                               if (GameMode.singlePlayer == widget.mode) {
+                                await Future.delayed(
+                                  Duration(milliseconds: 500),
+                                );
                                 await controller.makeAiMove();
                               }
                               setState(() {});
