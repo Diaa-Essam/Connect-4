@@ -32,7 +32,7 @@ class _GameScreenState extends State<GameScreen> {
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -42,37 +42,45 @@ class _GameScreenState extends State<GameScreen> {
 
                       style: TextStyle(color: Colors.white70, fontSize: 16),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      controller.isDraw
-                          ? "DRAW"
-                          : controller.winner != null
-                          ? "WINNER"
-                          : widget.mode == GameMode.singlePlayer
-                          ? (controller.currentPlayer == 1 ? "PLAYER" : "AI")
-                          : (controller.currentPlayer == 2
-                                ? "PLAYER 1"
-                                : "PLAYER 2"),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
+                    SizedBox(height: 6),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          controller.isDraw
+                              ? "DRAW"
+                              : controller.winner != null
+                              ? "WINNER"
+                              : widget.mode == GameMode.singlePlayer
+                              ? (controller.currentPlayer == 1
+                                    ? "PLAYER"
+                                    : "AI Thinking...")
+                              : (controller.currentPlayer == 2
+                                    ? "PLAYER 1"
+                                    : "PLAYER 2"),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+
+                        SizedBox(width: 10),
+
+                        if (!controller.isDraw)
+                          CircleAvatar(
+                            radius: 10,
+                            backgroundColor: controller.winner != null
+                                ? controller.winner == 1
+                                      ? Colors.red
+                                      : Colors.yellow
+                                : controller.currentPlayer == 1
+                                ? Colors.red
+                                : Colors.yellow,
+                          ),
+                      ],
                     ),
-
-                    SizedBox(width: 10),
-
-                    if (!controller.isDraw)
-                      CircleAvatar(
-                        radius: 10,
-                        backgroundColor: controller.winner != null
-                            ? controller.winner == 1
-                                  ? Colors.red
-                                  : Colors.yellow
-                            : controller.currentPlayer == 1
-                            ? Colors.red
-                            : Colors.yellow,
-                      ),
                   ],
                 ),
                 SizedBox(height: 10),
