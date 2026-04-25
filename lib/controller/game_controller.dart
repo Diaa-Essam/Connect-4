@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:connect_four/model/board.dart';
 import 'package:connect_four/controller/ai_controller.dart';
 

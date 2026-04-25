@@ -47,22 +47,32 @@ class _GameScreenState extends State<GameScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          controller.isDraw
-                              ? "DRAW"
-                              : controller.winner != null
-                              ? "WINNER"
-                              : widget.mode == GameMode.singlePlayer
-                              ? (controller.currentPlayer == 1
-                                    ? "PLAYER"
-                                    : "AI Thinking...")
-                              : (controller.currentPlayer == 2
-                                    ? "PLAYER 1"
-                                    : "PLAYER 2"),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            color: Colors.white,
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 1000),
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(opacity: animation, child: child),
+                          child: Text(
+                            controller.isDraw
+                                ? "DRAW"
+                                : controller.winner != null
+                                ? "WINNER"
+                                : widget.mode == GameMode.singlePlayer
+                                ? (controller.currentPlayer == 1
+                                      ? "PLAYER"
+                                      : "AI Thinking...")
+                                : (controller.currentPlayer == 2
+                                      ? "PLAYER 1"
+                                      : "PLAYER 2"),
+                            key: ValueKey(
+                              controller.currentPlayer.toString() +
+                                  controller.winner.toString() +
+                                  controller.isDraw.toString(),
+                            ),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
 
