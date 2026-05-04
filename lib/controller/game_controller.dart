@@ -26,6 +26,11 @@ class GameController {
     if (result != null) {
       winner = currentPlayer;
       winningCells = result;
+      if (currentPlayer == 1) {
+        scorePlayer1++;
+      } else {
+        scorePlayer2++;
+      }
     } else if (board.isBoardFull()) {
       isDraw = true;
     } else {

@@ -99,6 +99,34 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   SizedBox(height: 10),
 
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(radius: 10, backgroundColor: Colors.red),
+                      SizedBox(width: 10),
+                      Text(
+                        "${controller.scorePlayer1}",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(width: 30),
+                      CircleAvatar(radius: 10, backgroundColor: Colors.yellow),
+                      SizedBox(width: 10),
+                      Text(
+                        "${controller.scorePlayer2}",
+                        style: TextStyle(
+                          color: Colors.yellow,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 10),
                   Container(
                     width: MediaQuery.of(context).size.width - 28,
                     padding: EdgeInsets.all(8),
