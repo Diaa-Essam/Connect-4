@@ -127,115 +127,132 @@ class _GameScreenState extends State<GameScreen> {
                   ),
 
                   SizedBox(height: 10),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 28,
-                    padding: EdgeInsets.all(8),
-                    margin: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 20,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                      color: Colors.blue.shade700,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: GridView.builder(
-                      itemCount: 42,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7,
-                        childAspectRatio: 1,
-                      ),
-                      itemBuilder: (context, index) {
-                        int row = index ~/ 7;
-                        int col = index % 7;
-
-                        int cell = controller.board.grid[row][col];
-                        bool isWinnigCell = controller.isWinnigCell(row, col);
-
-                        Color color;
-                        if (isWinnigCell) {
-                          color = Colors.green;
-                        } else if (cell == 1) {
-                          color = Colors.red;
-                        } else if (cell == 2) {
-                          color = Colors.yellow;
-                        } else {
-                          color = Color(0xFFE5E7EB);
-                        }
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(50),
-
-                          onTap: () async {
-                            if (widget.mode == GameMode.singlePlayer &&
-                                controller.currentPlayer != 1)
-                              return;
-
-                            setState(() {
-                              pressedIndex = null;
-                              droppingColumn = col;
-                            });
-
-                            await controller.makeMove(col);
-                            setState(() {});
-
-                            if (GameMode.singlePlayer == widget.mode) {
-                              await Future.delayed(Duration(milliseconds: 500));
-                              await controller.makeAiMove();
-                            }
-                            setState(() {});
-                          },
-                          onTapDown: (_) {
-                            setState(() {
-                              pressedIndex = index;
-                            });
-                          },
-                          onTapUp: (_) {
-                            setState(() {
-                              pressedIndex = null;
-                            });
-                          },
-                          onTapCancel: () {
-                            setState(() {
-                              pressedIndex = null;
-                            });
-                          },
-                          child: AnimatedScale(
-                            scale: pressedIndex == index ? 0.85 : 1,
-                            duration: Duration(milliseconds: 100),
-                            child: AnimatedContainer(
-                              duration: Duration(milliseconds: 100),
-                              margin: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: color,
-                                boxShadow: [
-                                  if (cell != 0)
-                                    BoxShadow(
-                                      color:
-                                          (cell == 1
-                                                  ? Colors.red
-                                                  : Colors.yellow)
-                                              .withOpacity(0.6),
-                                      blurRadius: 12,
-                                      spreadRadius: 2,
-                                    ),
-
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 3,
-                                    offset: Offset(0, 1),
-                                  ),
-                                ],
-                              ),
+                  // The Board Of The Game :-:-:
+                  AnimatedOpacity(
+                    opacity: (controller.winner != null || controller.isDraw)
+                        ? 0.6
+                        : 1,
+                    duration: Duration(milliseconds: 1000),
+                    child: IgnorePointer(
+                      ignoring: controller.winner != null || controller.isDraw,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 28,
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20,
+                              offset: Offset(0, 5),
                             ),
-                          ),
-                        );
-                      },
+                          ],
+                          color: Colors.blue.shade700,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+
+                        child: GridView.builder(
+                          itemCount: 42,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 7,
+                                childAspectRatio: 1,
+                              ),
+                          itemBuilder: (context, index) {
+                            int row = index ~/ 7;
+                            int col = index % 7;
+
+                            int cell = controller.board.grid[row][col];
+                            bool isWinnigCell = controller.isWinnigCell(
+                              row,
+                              col,
+                            );
+
+                            Color color;
+                            if (isWinnigCell) {
+                              color = Colors.green;
+                            } else if (cell == 1) {
+                              color = Colors.red;
+                            } else if (cell == 2) {
+                              color = Colors.yellow;
+                            } else {
+                              color = Color(0xFFE5E7EB);
+                            }
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(50),
+
+                              onTap: () async {
+                                if (widget.mode == GameMode.singlePlayer &&
+                                    controller.currentPlayer != 1)
+                                  return;
+
+                                setState(() {
+                                  pressedIndex = null;
+                                  droppingColumn = col;
+                                });
+
+                                await controller.makeMove(col);
+                                setState(() {});
+
+                                if (GameMode.singlePlayer == widget.mode) {
+                                  await Future.delayed(
+                                    Duration(milliseconds: 500),
+                                  );
+                                  await controller.makeAiMove();
+                                }
+                                setState(() {});
+                              },
+                              onTapDown: (_) {
+                                setState(() {
+                                  pressedIndex = index;
+                                });
+                              },
+                              onTapUp: (_) {
+                                setState(() {
+                                  pressedIndex = null;
+                                });
+                              },
+                              onTapCancel: () {
+                                setState(() {
+                                  pressedIndex = null;
+                                });
+                              },
+                              child: AnimatedScale(
+                                scale: pressedIndex == index ? 0.85 : 1,
+                                duration: Duration(milliseconds: 100),
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 100),
+                                  margin: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: color,
+                                    boxShadow: [
+                                      if (cell != 0)
+                                        BoxShadow(
+                                          color:
+                                              (cell == 1
+                                                      ? Colors.red
+                                                      : Colors.yellow)
+                                                  .withOpacity(0.6),
+                                          blurRadius: 12,
+                                          spreadRadius: 2,
+                                        ),
+
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        blurRadius: 3,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
 
