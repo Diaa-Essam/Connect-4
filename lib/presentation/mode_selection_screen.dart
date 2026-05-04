@@ -1,3 +1,4 @@
+import 'package:connect_four/presentation/app_button.dart';
 import 'package:flutter/material.dart';
 import '../model/game_mode.dart';
 import 'game_screen.dart';
@@ -35,8 +36,11 @@ class ModeSelectionScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () {
+
+              AppButton(
+                icon: Icons.person,
+                label: "Single Player",
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -44,11 +48,12 @@ class ModeSelectionScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("Single Player"),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
+              SizedBox(height: 16),
+              AppButton(
+                icon: Icons.group,
+                label: "Two Players",
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -56,7 +61,6 @@ class ModeSelectionScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("Two Players"),
               ),
             ],
           ),

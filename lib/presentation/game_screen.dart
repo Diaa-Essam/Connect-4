@@ -1,5 +1,6 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:connect_four/model/game_mode.dart';
+import 'package:connect_four/presentation/app_button.dart';
 import 'package:flutter/material.dart';
 
 class GameScreen extends StatefulWidget {
@@ -261,27 +262,10 @@ class _GameScreenState extends State<GameScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 4,
-                          backgroundColor: Colors.blueAccent,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: Text(
-                          "Play Again",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () {
+                      AppButton(
+                        icon: Icons.refresh,
+                        label: "Play Again",
+                        onTap: () {
                           controller.resetGame();
                           setState(() {});
                         },
@@ -289,29 +273,11 @@ class _GameScreenState extends State<GameScreen> {
 
                       SizedBox(width: 20),
 
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 4,
-                          backgroundColor: Colors.blueAccent,
-                          foregroundColor: Colors.white,
-                        ),
-                        child: Text(
-                          "Menu",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onPressed: () {
+                      AppButton(
+                        icon: Icons.home,
+                        label: "Menu",
+                        onTap: () {
                           Navigator.pop(context);
-
                           setState(() {});
                         },
                       ),
