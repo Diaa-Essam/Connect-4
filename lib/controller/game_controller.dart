@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:connect_four/model/board.dart';
 import 'package:connect_four/controller/ai_controller.dart';
 
@@ -15,7 +13,7 @@ class GameController {
   int scorePlayer1 = 0;
   int scorePlayer2 = 0;
 
-  Future<bool> makeMove(int column) async {
+  bool makeMove(int column) {
     if (winner != null) return false;
 
     bool success = board.dropPiece(column, currentPlayer);
@@ -42,9 +40,9 @@ class GameController {
 
   Future<void> makeAiMove() async {
     if (!isAiEnabled || currentPlayer != 2 || winner != null || isDraw) return;
-    await Future.delayed(Duration(milliseconds: 400));
+    await Future.delayed(Duration(milliseconds: 300));
     final aiCol = _ai.getBestMove(board);
-    await makeMove(aiCol);
+    makeMove(aiCol);
   }
 
   bool isWinnigCell(int row, int col) {
