@@ -1,5 +1,8 @@
+import 'package:connect_four/core/app_constants.dart';
 import 'package:connect_four/model/board.dart';
 import 'package:connect_four/controller/ai_controller.dart';
+import 'package:connect_four/model/game_mode.dart';
+import 'package:flutter/material.dart';
 
 class GameController {
   Board board = Board();
@@ -9,9 +12,25 @@ class GameController {
   bool isDraw = false;
   final AiController _ai = AiController();
   bool isAiEnabled = true;
-
   int scorePlayer1 = 0;
   int scorePlayer2 = 0;
+
+  Future<void> handleTap(
+    int col,
+    GameMode mode, {
+    VoidCallback? onMoveComplete,
+  }) async {
+    if (winner != null || isDraw) return;
+    if (mode == GameMode.singlePlayer && currentPlayer != 1) return;
+
+    await makeMove(col);
+    onMoveComplete?.call();
+
+    if (mode == GameMode.singlePlayer && winner == null && !isDraw) {
+      await Future.delayed(AppConstants.aiMoveDelay);
+      await makeAiMove();
+    }
+  }
 
   bool makeMove(int column) {
     if (winner != null) return false;

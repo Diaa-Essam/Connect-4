@@ -185,40 +185,12 @@ class _GameScreenState extends State<GameScreen> {
                               borderRadius: BorderRadius.circular(50),
 
                               onTap: () async {
-                                if (widget.mode == GameMode.singlePlayer &&
-                                    controller.currentPlayer != 1)
-                                  return;
-
-                                setState(() {
-                                  pressedIndex = null;
-                                  droppingColumn = col;
-                                });
-
-                                await controller.makeMove(col);
+                                await controller.handleTap(
+                                  col,
+                                  widget.mode,
+                                  onMoveComplete: () => setState(() {}),
+                                );
                                 setState(() {});
-
-                                if (GameMode.singlePlayer == widget.mode) {
-                                  await Future.delayed(
-                                    Duration(milliseconds: 500),
-                                  );
-                                  await controller.makeAiMove();
-                                }
-                                setState(() {});
-                              },
-                              onTapDown: (_) {
-                                setState(() {
-                                  pressedIndex = index;
-                                });
-                              },
-                              onTapUp: (_) {
-                                setState(() {
-                                  pressedIndex = null;
-                                });
-                              },
-                              onTapCancel: () {
-                                setState(() {
-                                  pressedIndex = null;
-                                });
                               },
                               child: AnimatedScale(
                                 scale: pressedIndex == index ? 0.85 : 1,
