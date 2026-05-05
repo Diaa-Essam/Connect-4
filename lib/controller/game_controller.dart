@@ -1,6 +1,9 @@
+import 'package:connect_four/core/app_constants.dart';
 import 'package:connect_four/model/board.dart';
 import 'package:connect_four/model/node.dart';
 import 'package:connect_four/controller/ai_controller.dart';
+import 'package:connect_four/model/game_mode.dart';
+import 'package:flutter/material.dart';
 
 class GameController {
   Board board = Board();
@@ -10,12 +13,8 @@ class GameController {
   bool isDraw = false;
   final AiController _ai = AiController();
   bool isAiEnabled = true;
-
   int scorePlayer1 = 0;
   int scorePlayer2 = 0;
-
-  // The minimax tree from the last AI move — null before first AI move.
-  Node? lastMinimaxTree;
 
   bool makeMove(int column) {
     if (winner != null) return false;

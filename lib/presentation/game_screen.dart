@@ -195,23 +195,32 @@ class _GameScreenState extends State<GameScreen> {
                                   droppingColumn = col;
                                 });
 
-                                controller.makeMove(col);
+                                await controller.makeMove(col);
                                 setState(() {});
 
-                                if (widget.mode == GameMode.singlePlayer) {
+                                if (GameMode.singlePlayer == widget.mode) {
                                   await Future.delayed(
-                                    const Duration(milliseconds: 500),
+                                    Duration(milliseconds: 500),
                                   );
                                   await controller.makeAiMove();
-                                  setState(() {});
                                 }
+                                setState(() {});
                               },
-                              onTapDown: (_) =>
-                                  setState(() => pressedIndex = index),
-                              onTapUp: (_) =>
-                                  setState(() => pressedIndex = null),
-                              onTapCancel: () =>
-                                  setState(() => pressedIndex = null),
+                              onTapDown: (_) {
+                                setState(() {
+                                  pressedIndex = index;
+                                });
+                              },
+                              onTapUp: (_) {
+                                setState(() {
+                                  pressedIndex = null;
+                                });
+                              },
+                              onTapCancel: () {
+                                setState(() {
+                                  pressedIndex = null;
+                                });
+                              },
                               child: AnimatedScale(
                                 scale: pressedIndex == index ? 0.85 : 1,
                                 duration: const Duration(milliseconds: 100),
