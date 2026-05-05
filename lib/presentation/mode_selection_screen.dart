@@ -57,6 +57,29 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    width: 80,
+                    height: 45,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.red,
+                            radius: 22,
+                          ),
+                        ),
+                        Positioned(
+                          left: 36,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.yellow,
+                            radius: 22,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
                   Text(
                     "Connect Four",
                     style: TextStyle(
