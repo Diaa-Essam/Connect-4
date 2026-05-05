@@ -1,6 +1,7 @@
 import 'package:connect_four/controller/game_controller.dart';
 import 'package:connect_four/model/game_mode.dart';
 import 'package:connect_four/presentation/app_button.dart';
+import 'package:connect_four/presentation/min_max_tree.dart';
 import 'package:flutter/material.dart';
 
 class GameScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _GameScreenState extends State<GameScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF0F172A), Color(0xFF1E3A8A)],
             begin: Alignment.topCenter,
@@ -33,24 +34,26 @@ class _GameScreenState extends State<GameScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
+                  // ── Status header ──
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         widget.mode == GameMode.singlePlayer
-                            ? "Single Player "
-                            : "Two Players ",
-
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                            ? "Single Player"
+                            : "Two Players",
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
                       ),
-                      SizedBox(height: 6),
-
+                      const SizedBox(height: 6),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AnimatedSwitcher(
-                            duration: Duration(milliseconds: 1000),
+                            duration: const Duration(milliseconds: 1000),
                             transitionBuilder: (child, animation) =>
                                 FadeTransition(
                                   opacity: animation,
@@ -73,16 +76,14 @@ class _GameScreenState extends State<GameScreen> {
                                     controller.winner.toString() +
                                     controller.isDraw.toString(),
                               ),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                                 color: Colors.white,
                               ),
                             ),
                           ),
-
-                          SizedBox(width: 10),
-
+                          const SizedBox(width: 10),
                           if (!controller.isDraw)
                             CircleAvatar(
                               radius: 10,
@@ -98,27 +99,33 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
-
+                  const SizedBox(height: 10),
+                  // ── Score row ──
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(radius: 10, backgroundColor: Colors.red),
-                      SizedBox(width: 10),
+                      const CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.red,
+                      ),
+                      const SizedBox(width: 10),
                       Text(
                         "${controller.scorePlayer1}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.red,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(width: 30),
-                      CircleAvatar(radius: 10, backgroundColor: Colors.yellow),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 30),
+                      const CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.yellow,
+                      ),
+                      const SizedBox(width: 10),
                       Text(
                         "${controller.scorePlayer2}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.yellow,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -126,22 +133,21 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ],
                   ),
-
-                  SizedBox(height: 10),
-                  // The Board Of The Game :-:-:
+                  const SizedBox(height: 10),
+                  // ── Board ──
                   AnimatedOpacity(
                     opacity: (controller.winner != null || controller.isDraw)
                         ? 0.6
                         : 1,
-                    duration: Duration(milliseconds: 1000),
+                    duration: const Duration(milliseconds: 1000),
                     child: IgnorePointer(
                       ignoring: controller.winner != null || controller.isDraw,
                       child: Container(
                         width: MediaQuery.of(context).size.width - 28,
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
                               blurRadius: 20,
@@ -151,39 +157,34 @@ class _GameScreenState extends State<GameScreen> {
                           color: Colors.blue.shade700,
                           borderRadius: BorderRadius.circular(16),
                         ),
-
                         child: GridView.builder(
                           itemCount: 42,
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 7,
                                 childAspectRatio: 1,
                               ),
                           itemBuilder: (context, index) {
                             int row = index ~/ 7;
                             int col = index % 7;
-
                             int cell = controller.board.grid[row][col];
-                            bool isWinnigCell = controller.isWinnigCell(
-                              row,
-                              col,
-                            );
+                            bool isWinCell = controller.isWinnigCell(row, col);
 
                             Color color;
-                            if (isWinnigCell) {
+                            if (isWinCell) {
                               color = Colors.green;
                             } else if (cell == 1) {
                               color = Colors.red;
                             } else if (cell == 2) {
                               color = Colors.yellow;
                             } else {
-                              color = Color(0xFFE5E7EB);
+                              color = const Color(0xFFE5E7EB);
                             }
+
                             return InkWell(
                               borderRadius: BorderRadius.circular(50),
-
                               onTap: () async {
                                 if (widget.mode == GameMode.singlePlayer &&
                                     controller.currentPlayer != 1)
@@ -194,38 +195,29 @@ class _GameScreenState extends State<GameScreen> {
                                   droppingColumn = col;
                                 });
 
-                                await controller.makeMove(col);
+                                controller.makeMove(col);
                                 setState(() {});
 
-                                if (GameMode.singlePlayer == widget.mode) {
+                                if (widget.mode == GameMode.singlePlayer) {
                                   await Future.delayed(
-                                    Duration(milliseconds: 500),
+                                    const Duration(milliseconds: 500),
                                   );
                                   await controller.makeAiMove();
+                                  setState(() {});
                                 }
-                                setState(() {});
                               },
-                              onTapDown: (_) {
-                                setState(() {
-                                  pressedIndex = index;
-                                });
-                              },
-                              onTapUp: (_) {
-                                setState(() {
-                                  pressedIndex = null;
-                                });
-                              },
-                              onTapCancel: () {
-                                setState(() {
-                                  pressedIndex = null;
-                                });
-                              },
+                              onTapDown: (_) =>
+                                  setState(() => pressedIndex = index),
+                              onTapUp: (_) =>
+                                  setState(() => pressedIndex = null),
+                              onTapCancel: () =>
+                                  setState(() => pressedIndex = null),
                               child: AnimatedScale(
                                 scale: pressedIndex == index ? 0.85 : 1,
-                                duration: Duration(milliseconds: 100),
+                                duration: const Duration(milliseconds: 100),
                                 child: AnimatedContainer(
-                                  duration: Duration(milliseconds: 100),
-                                  margin: EdgeInsets.all(6),
+                                  duration: const Duration(milliseconds: 100),
+                                  margin: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: color,
@@ -240,8 +232,7 @@ class _GameScreenState extends State<GameScreen> {
                                           blurRadius: 12,
                                           spreadRadius: 2,
                                         ),
-
-                                      BoxShadow(
+                                      const BoxShadow(
                                         color: Colors.black12,
                                         blurRadius: 3,
                                         offset: Offset(0, 1),
@@ -256,34 +247,40 @@ class _GameScreenState extends State<GameScreen> {
                       ),
                     ),
                   ),
+                  // ── Minimax tree (single player only) ──
+                  if (widget.mode == GameMode.singlePlayer &&
+                      controller.lastMinimaxTree != null)
+                    MinimaxTreeWidget(root: controller.lastMinimaxTree!),
 
-                  SizedBox(height: 10),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppButton(
-                        icon: Icons.refresh,
-                        label: "Play Again",
-                        onTap: () {
-                          controller.resetGame();
-                          setState(() {});
-                        },
-                      ),
-
-                      SizedBox(width: 20),
-
-                      AppButton(
-                        icon: Icons.home,
-                        label: "Menu",
-                        onTap: () {
-                          Navigator.pop(context);
-                          setState(() {});
-                        },
-                      ),
-                    ],
+                  const SizedBox(height: 10),
+                  // ── Buttons ──
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            icon: Icons.refresh,
+                            label: "Play Again",
+                            onTap: () {
+                              controller.resetGame();
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: AppButton(
+                            icon: Icons.home,
+                            label: "Menu",
+                            onTap: () => Navigator.pop(context),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),

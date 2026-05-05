@@ -1,4 +1,5 @@
 import 'package:connect_four/model/board.dart';
+import 'package:connect_four/model/node.dart';
 import 'package:connect_four/controller/ai_controller.dart';
 
 class GameController {
@@ -13,11 +14,13 @@ class GameController {
   int scorePlayer1 = 0;
   int scorePlayer2 = 0;
 
+  // The minimax tree from the last AI move — null before first AI move.
+  Node? lastMinimaxTree;
+
   bool makeMove(int column) {
     if (winner != null) return false;
 
     bool success = board.dropPiece(column, currentPlayer);
-
     if (!success) return false;
 
     final result = board.checkWin(currentPlayer);
@@ -41,7 +44,9 @@ class GameController {
   Future<void> makeAiMove() async {
     if (!isAiEnabled || currentPlayer != 2 || winner != null || isDraw) return;
     await Future.delayed(Duration(milliseconds: 300));
-    final aiCol = _ai.getBestMove(board);
+
+    final (aiCol, tree) = _ai.getBestMoveWithTree(board);
+    lastMinimaxTree = tree;
     makeMove(aiCol);
   }
 
@@ -58,5 +63,6 @@ class GameController {
     winner = null;
     isDraw = false;
     winningCells = [];
+    lastMinimaxTree = null;
   }
 }
