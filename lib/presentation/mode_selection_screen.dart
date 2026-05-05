@@ -11,10 +11,12 @@ class ModeSelectionScreen extends StatefulWidget {
 }
 
 class _ModeSelectionScreenState extends State<ModeSelectionScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnim;
 
   @override
   void initState() {
@@ -30,11 +32,20 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 900),
+    )..repeat(reverse: true);
+    _pulseAnim = Tween<double>(begin: 0.9, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -57,26 +68,35 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 80,
-                    height: 45,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.red,
-                            radius: 22,
+                  AnimatedBuilder(
+                    animation: _pulseAnim,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: _pulseAnim.value,
+                        child: child,
+                      );
+                    },
+                    child: SizedBox(
+                      width: 80,
+                      height: 44,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 22,
+                            ),
                           ),
-                        ),
-                        Positioned(
-                          left: 36,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.yellow,
-                            radius: 22,
+                          Positioned(
+                            left: 36,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.yellow,
+                              radius: 22,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -109,7 +129,6 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
                         _controller.reset();
                         _controller.forward();
                       });
-                      ;
                     },
                   ),
                   SizedBox(height: 16),
