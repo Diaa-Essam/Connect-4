@@ -32,8 +32,8 @@ class AiController {
   }
 
   int maximizeNode(Node node, Board board, int depth) {
-    if (board.checkWin(1) != null) return node.utility = 1000 + depth;
-    if (board.checkWin(2) != null) return node.utility = -1000 - depth;
+    if (board.checkWin(1) != null) return node.utility = 1;
+    if (board.checkWin(2) != null) return node.utility = -1;
     if (board.isBoardFull() || depth == 0) return node.utility = 0;
 
     for (int col = 0; col < board.grid[0].length; col++) {
@@ -55,8 +55,8 @@ class AiController {
   }
 
   int minimizeNode(Node node, Board board, int depth) {
-    if (board.checkWin(1) != null) return node.utility = 1000 + depth;
-    if (board.checkWin(2) != null) return node.utility = -1000 - depth;
+    if (board.checkWin(1) != null) return node.utility = 1;
+    if (board.checkWin(2) != null) return node.utility = -1;
     if (board.isBoardFull() || depth == 0) return node.utility = 0;
 
     for (int col = 0; col < board.grid[0].length; col++) {
