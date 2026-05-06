@@ -6,13 +6,13 @@ class AppButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  AppButton({
+  const AppButton({
     super.key,
     required this.icon,
     required this.label,
     required this.onTap,
   });
-
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 220,
