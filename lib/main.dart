@@ -1,5 +1,4 @@
-import 'package:connect_four/presentation/game_screen.dart';
-import 'package:connect_four/presentation/mode_selection_screen.dart';
+import 'package:connect_four/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ModeSelectionScreen(),
+      home: const SettingsScreen(),
     );
   }
 }

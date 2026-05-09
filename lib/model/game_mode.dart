@@ -1,1 +1,1 @@
-enum GameMode { singlePlayer, twoPlayers }
+enum GameMode { singlePlayer, twoPlayers, aiVsAiVisual, aiVsAiBenchmark }

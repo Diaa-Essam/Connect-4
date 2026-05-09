@@ -1,59 +1,25 @@
-import 'package:connect_four/presentation/app_button.dart';
+import 'package:connect_four/model/algorithm.dart';
+import 'package:connect_four/model/game_mode.dart';
+import 'package:connect_four/presentation/ai_vs_ai_screen.dart';
+import 'package:connect_four/presentation/benchmark_screen.dart';
+import 'package:connect_four/presentation/game_screen.dart';
 import 'package:flutter/material.dart';
-import '../model/game_mode.dart';
-import 'game_screen.dart';
 
-class ModeSelectionScreen extends StatefulWidget {
-  const ModeSelectionScreen({super.key});
+class ModeSelectionScreen extends StatelessWidget {
+  final Algorithm algorithm;
+  final int kDepth;
 
-  @override
-  State<ModeSelectionScreen> createState() => _ModeSelectionScreenState();
-}
-
-class _ModeSelectionScreenState extends State<ModeSelectionScreen>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnim;
-  late Animation<Offset> _slideAnim;
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 1300),
-    );
-    _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _slideAnim = Tween<Offset>(
-      begin: Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    _controller.forward();
-
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 900),
-    )..repeat(reverse: true);
-    _pulseAnim = Tween<double>(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _pulseController.dispose();
-    super.dispose();
-  }
+  const ModeSelectionScreen({
+    super.key,
+    required this.algorithm,
+    required this.kDepth,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF0F172A), Color(0xFF1E3A8A)],
             begin: Alignment.topCenter,
@@ -61,96 +27,87 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen>
           ),
         ),
         child: Center(
-          child: FadeTransition(
-            opacity: _fadeAnim,
-            child: SlideTransition(
-              position: _slideAnim,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AnimatedBuilder(
-                    animation: _pulseAnim,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: _pulseAnim.value,
-                        child: child,
-                      );
-                    },
-                    child: SizedBox(
-                      width: 80,
-                      height: 44,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.red,
-                              radius: 22,
-                            ),
-                          ),
-                          Positioned(
-                            left: 36,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.yellow,
-                              radius: 22,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Connect Four",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Choose a mode to start",
-                    style: TextStyle(color: Colors.white54, fontSize: 14),
-                  ),
-                  SizedBox(height: 40),
-                  AppButton(
-                    icon: Icons.person,
-                    label: "Single Player",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              GameScreen(mode: GameMode.singlePlayer),
-                        ),
-                      ).then((_) {
-                        _controller.reset();
-                        _controller.forward();
-                      });
-                    },
-                  ),
-                  SizedBox(height: 16),
-                  AppButton(
-                    icon: Icons.group,
-                    label: "Two Players",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => GameScreen(mode: GameMode.twoPlayers),
-                        ),
-                      ).then((_) {
-                        _controller.reset();
-                        _controller.forward();
-                      });
-                    },
-                  ),
-                ],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Select Mode",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
+              const SizedBox(height: 8),
+              Text(
+                "${algorithm.name.toUpperCase()} | K=$kDepth",
+                style: const TextStyle(color: Colors.white54, fontSize: 14),
+              ),
+              const SizedBox(height: 40),
+              _modeButton(context, Icons.person, "Single Player (vs AI)", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GameScreen(
+                      algorithm: algorithm,
+                      kDepth: kDepth,
+                      mode: GameMode.singlePlayer,
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+              _modeButton(context, Icons.group, "Two Players", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GameScreen(
+                      algorithm: algorithm,
+                      kDepth: kDepth,
+                      mode: GameMode.twoPlayers,
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+              _modeButton(context, Icons.visibility, "AI vs AI (Visual)", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => AiVsAiScreen(
+                      algorithm: algorithm,
+                      kDepth: kDepth,
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 16),
+              _modeButton(context, Icons.speed, "AI vs AI (Benchmark)", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BenchmarkScreen(kDepth: kDepth),
+                  ),
+                );
+              }),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _modeButton(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+    return SizedBox(
+      width: 260,
+      child: OutlinedButton.icon(
+        icon: Icon(icon, color: Colors.white),
+        label: Text(label, style: const TextStyle(color: Colors.white, fontSize: 16)),
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          side: const BorderSide(color: Colors.white30),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         ),
       ),
     );

@@ -1,0 +1,1 @@
+enum Algorithm { minimax, minimaxAlphaBeta, expectedMinimax }
