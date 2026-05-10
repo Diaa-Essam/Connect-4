@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:connect_four/model/node.dart';
+import 'package:flutter/material.dart';
 
 class MinimaxTreeWidget extends StatelessWidget {
   final Node root;
@@ -20,7 +20,12 @@ class MinimaxTreeWidget extends StatelessWidget {
         children: [
           const Text(
             'MINIMAX TREE',
-            style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+            style: TextStyle(
+              color: Colors.white54,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
           ),
           const SizedBox(height: 8),
           Row(
@@ -37,13 +42,15 @@ class MinimaxTreeWidget extends StatelessWidget {
             height: 320,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Builder(builder: (context) {
-                final double w = _computeWidth(root);
-                return CustomPaint(
-                  painter: _TreePainter(root),
-                  size: Size(w, 320),
-                );
-              }),
+              child: Builder(
+                builder: (context) {
+                  final double w = _computeWidth(root);
+                  return CustomPaint(
+                    painter: _TreePainter(root),
+                    size: Size(w, 320),
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -64,7 +71,10 @@ class MinimaxTreeWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 6),
-        Text(label, style: const TextStyle(color: Colors.white60, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white60, fontSize: 12),
+        ),
       ],
     );
   }
@@ -101,19 +111,35 @@ class _TreePainter extends CustomPainter {
     _drawNodes(canvas, root);
   }
 
-  void _assignPositions(Node node, int depth, double left, double right, double levelH) {
+  void _assignPositions(
+    Node node,
+    int depth,
+    double left,
+    double right,
+    double levelH,
+  ) {
     node.x = (left + right) / 2;
     node.y = _vPad + depth * levelH;
     if (node.neighbors.isEmpty) return;
     final double slotW = (right - left) / node.neighbors.length;
     for (int i = 0; i < node.neighbors.length; i++) {
-      _assignPositions(node.neighbors[i], depth + 1, left + i * slotW, left + (i + 1) * slotW, levelH);
+      _assignPositions(
+        node.neighbors[i],
+        depth + 1,
+        left + i * slotW,
+        left + (i + 1) * slotW,
+        levelH,
+      );
     }
   }
 
   void _drawEdges(Canvas canvas, Node node) {
     for (final child in node.neighbors) {
-      canvas.drawLine(Offset(node.x, node.y), Offset(child.x, child.y), _edgePaint);
+      canvas.drawLine(
+        Offset(node.x, node.y),
+        Offset(child.x, child.y),
+        _edgePaint,
+      );
       _drawEdges(canvas, child);
     }
   }
@@ -133,15 +159,17 @@ class _TreePainter extends CustomPainter {
     final Color fill = isMax
         ? Colors.blue.shade800
         : isMin
-            ? Colors.red.shade800
-            : Colors.green.shade800;
+        ? Colors.red.shade800
+        : Colors.green.shade800;
     final Color border = isMax
         ? Colors.blue.shade300
         : isMin
-            ? Colors.red.shade300
-            : Colors.green.shade300;
+        ? Colors.red.shade300
+        : Colors.green.shade300;
 
-    final fillPaint = Paint()..color = fill..style = PaintingStyle.fill;
+    final fillPaint = Paint()
+      ..color = fill
+      ..style = PaintingStyle.fill;
     final borderPaint = Paint()
       ..color = border
       ..strokeWidth = 1.5
@@ -175,9 +203,14 @@ class _TreePainter extends CustomPainter {
     }
 
     // Label: heuristic / utility
-    final bool isInfinity = node.utility != null && node.utility!.abs() >= (1 << 60);
+    final bool isInfinity =
+        node.utility != null && node.utility!.abs() >= (1 << 60);
     String label = isInfinity
-        ? (isMax ? '-∞' : isMin ? '+∞' : '?')
+        ? (isMax
+              ? '-∞'
+              : isMin
+              ? '+∞'
+              : '?')
         : (node.utility?.toString() ?? '?');
 
     // Add column info if present
@@ -201,21 +234,74 @@ class _TreePainter extends CustomPainter {
     final double textY = isMax
         ? node.y + 2
         : isMin
-            ? node.y - 2
-            : node.y;
+        ? node.y - 2
+        : node.y;
 
     tp.paint(canvas, Offset(node.x - tp.width / 2, textY - tp.height / 2));
 
-    // Alpha-beta annotations
+    // Alpha-beta annotations — colored pill below the node
     if (node.alpha != null && node.beta != null) {
-      final abText = TextPainter(
+      final bool aIsInf = node.alpha!.abs() >= (1 << 60);
+      final bool bIsInf = node.beta!.abs() >= (1 << 60);
+      final String aStr = aIsInf
+          ? (node.alpha! < 0 ? '-∞' : '+∞')
+          : '${node.alpha}';
+      final String bStr = bIsInf
+          ? (node.beta! < 0 ? '-∞' : '+∞')
+          : '${node.beta}';
+      final String abLabel = 'α=$aStr β=$bStr';
+
+      final abTp = TextPainter(
         text: TextSpan(
-          text: "α${node.alpha} β${node.beta}",
-          style: const TextStyle(color: Colors.white54, fontSize: 7),
+          children: [
+            TextSpan(
+              text: 'α=$aStr ',
+              style: const TextStyle(
+                color: Color(0xFF7DD3FC), // sky-300
+                fontSize: 8.5,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextSpan(
+              text: 'β=$bStr',
+              style: const TextStyle(
+                color: Color(0xFFFDA4AF), // rose-300
+                fontSize: 8.5,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
       )..layout();
-      abText.paint(canvas, Offset(node.x - abText.width / 2, node.y + _nodeR + 4));
+
+      final double pillW = abTp.width + 10;
+      final double pillH = abTp.height + 6;
+      final double pillX = node.x - pillW / 2;
+      final double pillY = node.y + _nodeR + 6;
+
+      // Pill background
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(pillX, pillY, pillW, pillH),
+          const Radius.circular(4),
+        ),
+        Paint()..color = const Color(0xFF1E293B),
+      );
+      // Pill border
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(pillX, pillY, pillW, pillH),
+          const Radius.circular(4),
+        ),
+        Paint()
+          ..color = Colors.white24
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8,
+      );
+
+      abTp.paint(canvas, Offset(pillX + 5, pillY + 3));
     }
   }
 

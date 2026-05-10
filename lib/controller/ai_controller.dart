@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:connect_four/model/algorithm.dart';
 import 'package:connect_four/model/board.dart';
 import 'package:connect_four/model/node.dart';
@@ -57,6 +56,8 @@ class AiController {
       int bestVal = player == 1 ? -(1 << 62) : (1 << 62);
       int alpha = -(1 << 62);
       int beta = (1 << 62);
+      root.alpha = alpha;
+      root.beta = beta;
       for (final col in validCols) {
         final temp = board.clone();
         temp.dropPiece(col, player);
@@ -74,19 +75,26 @@ class AiController {
             : _maximizeAB(child, temp, maxDepth - 1, alpha, beta);
 
         if (player == 1) {
-          if (val > bestVal) { bestVal = val; bestCol = col; }
+          if (val > bestVal) {
+            bestVal = val;
+            bestCol = col;
+          }
           if (val > alpha) alpha = val;
         } else {
-            if (val < bestVal) { bestVal = val; bestCol = col; }
-            if (val < beta) beta = val;
-            if (val > alpha) alpha = val; // Bug 3 fix: alpha must be updated for player 2 root so children can be pruned correctly
+          if (val < bestVal) {
+            bestVal = val;
+            bestCol = col;
           }
+          if (val < beta) beta = val;
+          if (val > alpha)
+            alpha =
+                val; // Bug 3 fix: alpha must be updated for player 2 root so children can be pruned correctly
+        }
       }
       root.utility = bestVal;
     } else if (algorithm == Algorithm.expectedMinimax) {
       double bestVal = player == 1 ? -double.infinity : double.infinity;
       for (final col in validCols) {
-
         final child = Node(
           nodeType: NodeType.chanceNode,
           column: col,
@@ -95,7 +103,9 @@ class AiController {
         root.neighbors.add(child);
 
         final val = _expected(child, board, maxDepth - 1, player == 1);
-        final int intVal = val.isFinite ? val.round() : (player == 1 ? (1 << 62) : -(1 << 62));
+        final int intVal = val.isFinite
+            ? val.round()
+            : (player == 1 ? (1 << 62) : -(1 << 62));
 
         if (player == 1 ? val > bestVal : val < bestVal) {
           bestVal = val;
@@ -103,7 +113,9 @@ class AiController {
         }
         child.utility = intVal;
       }
-      root.utility = bestVal.isFinite ? bestVal.round() : (player == 1 ? (1 << 62) : -(1 << 62));
+      root.utility = bestVal.isFinite
+          ? bestVal.round()
+          : (player == 1 ? (1 << 62) : -(1 << 62));
     }
 
     stopwatch.stop();
@@ -132,7 +144,11 @@ class AiController {
     for (final col in _getValidColumns(board)) {
       final temp = board.clone();
       temp.dropPiece(col, 1);
-      final child = Node(nodeType: NodeType.minNode, column: col, depth: node.depth + 1);
+      final child = Node(
+        nodeType: NodeType.minNode,
+        column: col,
+        depth: node.depth + 1,
+      );
       node.neighbors.add(child);
       final v = _minimize(child, temp, depth - 1);
       if (v > value) value = v;
@@ -149,7 +165,11 @@ class AiController {
     for (final col in _getValidColumns(board)) {
       final temp = board.clone();
       temp.dropPiece(col, 2);
-      final child = Node(nodeType: NodeType.maxNode, column: col, depth: node.depth + 1);
+      final child = Node(
+        nodeType: NodeType.maxNode,
+        column: col,
+        depth: node.depth + 1,
+      );
       node.neighbors.add(child);
       final v = _maximize(child, temp, depth - 1);
       if (v < value) value = v;
@@ -160,6 +180,8 @@ class AiController {
   // ---------- Alpha-Beta ----------
   int _maximizeAB(Node node, Board board, int depth, int alpha, int beta) {
     _nodesExpanded++;
+    node.alpha = alpha;
+    node.beta = beta;
     if (_isTerminal(board) || depth == 0) {
       return node.utility = _evaluate(board);
     }
@@ -177,17 +199,21 @@ class AiController {
       node.neighbors.add(child);
       final v = _minimizeAB(child, temp, depth - 1, alpha, beta);
       if (v > value) value = v;
+      if (value > alpha) alpha = value;
+      // Write updated alpha back so node shows the tightest bound it achieved
+      node.alpha = alpha;
       if (value >= beta) {
         node.utility = value;
         return value; // prune
       }
-      if (value > alpha) alpha = value;
     }
     return node.utility = value;
   }
 
   int _minimizeAB(Node node, Board board, int depth, int alpha, int beta) {
     _nodesExpanded++;
+    node.alpha = alpha;
+    node.beta = beta;
     if (_isTerminal(board) || depth == 0) {
       return node.utility = _evaluate(board);
     }
@@ -205,11 +231,13 @@ class AiController {
       node.neighbors.add(child);
       final v = _maximizeAB(child, temp, depth - 1, alpha, beta);
       if (v < value) value = v;
+      if (value < beta) beta = value;
+      // Write updated beta back so node shows the tightest bound it achieved
+      node.beta = beta;
       if (value <= alpha) {
         node.utility = value;
         return value; // prune
       }
-      if (value < beta) beta = value;
     }
     return node.utility = value;
   }
@@ -238,9 +266,6 @@ class AiController {
       for (final out in outcomes) {
         double p = out.$2 / total;
         final temp = board.clone();
-        // In expected minimax we assume the piece drops for the player whose turn it is at this depth
-        // We track original player through recursion by looking at depth parity? 
-        // Simplification: expected layer is only for the move error; the player alternates normally.
         int playerAtNode = isMaximizing ? 1 : 2;
         temp.dropPiece(out.$1, playerAtNode);
         final child = Node(
@@ -258,8 +283,11 @@ class AiController {
     } else if (node.nodeType == NodeType.maxNode) {
       double value = -double.infinity;
       for (final col in _getValidColumns(board)) {
-
-        final child = Node(nodeType: NodeType.chanceNode, column: col, depth: node.depth + 1);
+        final child = Node(
+          nodeType: NodeType.chanceNode,
+          column: col,
+          depth: node.depth + 1,
+        );
         node.neighbors.add(child);
         final v = _expected(child, board, depth - 1, true);
         if (v > value) value = v;
@@ -269,8 +297,11 @@ class AiController {
     } else {
       double value = double.infinity;
       for (final col in _getValidColumns(board)) {
-
-        final child = Node(nodeType: NodeType.chanceNode, column: col, depth: node.depth + 1);
+        final child = Node(
+          nodeType: NodeType.chanceNode,
+          column: col,
+          depth: node.depth + 1,
+        );
         node.neighbors.add(child);
         final v = _expected(child, board, depth - 1, false);
         if (v < value) value = v;
@@ -285,10 +316,14 @@ class AiController {
     final typeStr = node.nodeType == NodeType.maxNode
         ? "MAX"
         : node.nodeType == NodeType.minNode
-            ? "MIN"
-            : "CHANCE";
-    final prob = node.probability != null ? " p=${node.probability!.toStringAsFixed(2)}" : "";
-    final ab = (node.alpha != null && node.beta != null) ? " α=${node.alpha} β=${node.beta}" : "";
+        ? "MIN"
+        : "CHANCE";
+    final prob = node.probability != null
+        ? " p=${node.probability!.toStringAsFixed(2)}"
+        : "";
+    final ab = (node.alpha != null && node.beta != null)
+        ? " α=${node.alpha} β=${node.beta}"
+        : "";
     final col = node.column != null ? " col=${node.column}" : "";
     print("$indent$typeStr$col utility=${node.utility}$prob$ab");
     for (final child in node.neighbors) {
