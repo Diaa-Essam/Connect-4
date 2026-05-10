@@ -74,19 +74,18 @@ class AiController {
             : _maximizeAB(child, temp, maxDepth - 1, alpha, beta);
 
         if (player == 1) {
-          if (val > bestVal) bestVal = val;
+          if (val > bestVal) { bestVal = val; bestCol = col; }
           if (val > alpha) alpha = val;
         } else {
-          if (val < bestVal) bestVal = val;
-          if (val < beta) beta = val;
-        }
+            if (val < bestVal) { bestVal = val; bestCol = col; }
+            if (val < beta) beta = val;
+          }
       }
       root.utility = bestVal;
     } else if (algorithm == Algorithm.expectedMinimax) {
       double bestVal = player == 1 ? -double.infinity : double.infinity;
       for (final col in validCols) {
-        final temp = board.clone();
-        temp.dropPiece(col, player);
+
         final child = Node(
           nodeType: NodeType.chanceNode,
           column: col,
@@ -94,7 +93,7 @@ class AiController {
         );
         root.neighbors.add(child);
 
-        final val = _expected(child, temp, maxDepth - 1, player == 1);
+        final val = _expected(child, board, maxDepth - 1, player == 1);
         final int intVal = val.isFinite ? val.round() : (player == 1 ? (1 << 62) : -(1 << 62));
 
         if (player == 1 ? val > bestVal : val < bestVal) {
@@ -258,11 +257,10 @@ class AiController {
     } else if (node.nodeType == NodeType.maxNode) {
       double value = -double.infinity;
       for (final col in _getValidColumns(board)) {
-        final temp = board.clone();
-        temp.dropPiece(col, 1);
+
         final child = Node(nodeType: NodeType.chanceNode, column: col, depth: node.depth + 1);
         node.neighbors.add(child);
-        final v = _expected(child, temp, depth - 1, false);
+        final v = _expected(child, board, depth - 1, true);
         if (v > value) value = v;
       }
       node.utility = value.isFinite ? value.round() : -(1 << 62);
@@ -270,11 +268,10 @@ class AiController {
     } else {
       double value = double.infinity;
       for (final col in _getValidColumns(board)) {
-        final temp = board.clone();
-        temp.dropPiece(col, 2);
+
         final child = Node(nodeType: NodeType.chanceNode, column: col, depth: node.depth + 1);
         node.neighbors.add(child);
-        final v = _expected(child, temp, depth - 1, true);
+        final v = _expected(child, board, depth - 1, false);
         if (v < value) value = v;
       }
       node.utility = value.isFinite ? value.round() : (1 << 62);
@@ -294,7 +291,7 @@ class AiController {
     final col = node.column != null ? " col=${node.column}" : "";
     print("$indent$typeStr$col utility=${node.utility}$prob$ab");
     for (final child in node.neighbors) {
-      printTree(child, indent: indent + "  ");
+      printTree(child, indent: "$indent  ");
     }
   }
 }

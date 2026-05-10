@@ -44,7 +44,9 @@ class Board {
         if (grid[r][c] == player &&
             grid[r][c + 1] == player &&
             grid[r][c + 2] == player &&
-            grid[r][c + 3] == player) count++;
+            grid[r][c + 3] == player) {
+          count++;
+        }
       }
     }
     // Vertical
@@ -53,7 +55,9 @@ class Board {
         if (grid[r][c] == player &&
             grid[r + 1][c] == player &&
             grid[r + 2][c] == player &&
-            grid[r + 3][c] == player) count++;
+            grid[r + 3][c] == player) {
+          count++;
+        }
       }
     }
     // Diagonal down-right
@@ -62,7 +66,9 @@ class Board {
         if (grid[r][c] == player &&
             grid[r + 1][c + 1] == player &&
             grid[r + 2][c + 2] == player &&
-            grid[r + 3][c + 3] == player) count++;
+            grid[r + 3][c + 3] == player) {
+          count++;
+        }
       }
     }
     // Diagonal down-left
@@ -71,7 +77,9 @@ class Board {
         if (grid[r][c] == player &&
             grid[r + 1][c - 1] == player &&
             grid[r + 2][c - 2] == player &&
-            grid[r + 3][c - 3] == player) count++;
+            grid[r + 3][c - 3] == player) {
+          count++;
+        }
       }
     }
     return count;
@@ -82,8 +90,9 @@ class Board {
     int score = 0;
     // Center column preference (column 3)
     for (int r = 0; r < 6; r++) {
-      if (grid[r][3] == 1) score += 3;
-      else if (grid[r][3] == 2) score -= 3;
+      if (grid[r][3] == 1) {
+        score += 3;
+      } else if (grid[r][3] == 2) score -= 3;
     }
 
     int evalWindow(List<int> w) {
@@ -105,19 +114,27 @@ class Board {
 
     // Horizontal
     for (int r = 0; r < 6; r++) {
-      for (int c = 0; c < 4; c++) score += evalWindow(getWindow(r, c, 0, 1));
+      for (int c = 0; c < 4; c++) {
+        score += evalWindow(getWindow(r, c, 0, 1));
+      }
     }
     // Vertical
     for (int c = 0; c < 7; c++) {
-      for (int r = 0; r < 3; r++) score += evalWindow(getWindow(r, c, 1, 0));
+      for (int r = 0; r < 3; r++) {
+        score += evalWindow(getWindow(r, c, 1, 0));
+      }
     }
     // Diagonal /
     for (int r = 0; r < 3; r++) {
-      for (int c = 0; c < 4; c++) score += evalWindow(getWindow(r, c, 1, 1));
+      for (int c = 0; c < 4; c++) {
+        score += evalWindow(getWindow(r, c, 1, 1));
+      }
     }
     // Diagonal \
     for (int r = 0; r < 3; r++) {
-      for (int c = 3; c < 7; c++) score += evalWindow(getWindow(r, c, 1, -1));
+      for (int c = 3; c < 7; c++) {
+        score += evalWindow(getWindow(r, c, 1, -1));
+      }
     }
 
     return score;

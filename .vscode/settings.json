@@ -1,3 +1,5 @@
 {
-    "cmake.sourceDirectory": "/home/diaa/1.Brain-Buffet/GitHub/connect_4/linux"
+    "cmake.sourceDirectory": "/home/diaa/1.Brain-Buffet/GitHub/connect_4/linux",
+    "dart.flutterSdkPath": "/Users/philo/flutter",
+    "dart.sdkPath": "/Users/philo/flutter/bin/cache/dart-sdk"
 }

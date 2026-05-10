@@ -56,6 +56,7 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
 
     setState(() => isRunning = false);
 
+    if (!mounted) return; // ADD THIS
     // Show final stats
     showDialog(
       context: context,
@@ -189,8 +190,9 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
           int col = index % 7;
           int cell = controller.board.grid[row][col];
           Color color;
-          if (cell == 1) color = Colors.red;
-          else if (cell == 2) color = Colors.yellow;
+          if (cell == 1) {
+            color = Colors.red;
+          } else if (cell == 2) color = Colors.yellow;
           else color = const Color(0xFFE5E7EB);
 
           return AnimatedContainer(

@@ -80,6 +80,7 @@ class GameController {
       ctrl.lastMinimaxTree = result.root;
       ctrl.makeMove(result.column);
       moves++;
+      await Future.delayed(Duration.zero); // ADD THIS
     }
 
     stopwatch.stop();

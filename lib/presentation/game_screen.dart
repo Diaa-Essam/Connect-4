@@ -36,11 +36,13 @@ class _GameScreenState extends State<GameScreen> {
   /// Block input when game is over, during AI turn in single-player, or in AI-vs-AI modes.
   bool get _inputBlocked {
     if (controller.isGameOver) return true;
-    if (widget.mode == GameMode.singlePlayer && controller.currentPlayer != 1)
+    if (widget.mode == GameMode.singlePlayer && controller.currentPlayer != 1) {
       return true;
+    }
     if (widget.mode == GameMode.aiVsAiVisual ||
-        widget.mode == GameMode.aiVsAiBenchmark)
+        widget.mode == GameMode.aiVsAiBenchmark) {
       return true;
+    }
     return false;
   }
 
@@ -59,8 +61,9 @@ class _GameScreenState extends State<GameScreen> {
   String get _turnText {
     if (controller.isGameOver) {
       if (controller.scorePlayer1 > controller.scorePlayer2) return "RED WINS";
-      if (controller.scorePlayer2 > controller.scorePlayer1)
+      if (controller.scorePlayer2 > controller.scorePlayer1) {
         return "YELLOW WINS";
+      }
       return "DRAW";
     }
     switch (widget.mode) {

@@ -120,7 +120,9 @@ class _TreePainter extends CustomPainter {
 
   void _drawNodes(Canvas canvas, Node node) {
     _drawNode(canvas, node);
-    for (final child in node.neighbors) _drawNodes(canvas, child);
+    for (final child in node.neighbors) {
+      _drawNodes(canvas, child);
+    }
   }
 
   void _drawNode(Canvas canvas, Node node) {
