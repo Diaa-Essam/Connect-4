@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'package:connect_four/controller/ai_controller.dart';
 import 'package:connect_four/model/algorithm.dart';
 import 'package:connect_four/model/board.dart';
@@ -8,7 +9,7 @@ class GameController {
   Board board = Board();
   int currentPlayer = 1; // 1 = human (red), 2 = AI (yellow)
   bool isGameOver = false;
-  
+
   // Scoring: total connections on board until full
   int scorePlayer1 = 0;
   int scorePlayer2 = 0;
@@ -64,23 +65,53 @@ class GameController {
     makeMove(result.column);
   }
 
-  // For background benchmark: run entire game without UI delays
+  // ── Benchmark ──────────────────────────────────────────────────────────────
+  //
+  // Fix 1: Run the entire game inside a separate Isolate so the heavy CPU work
+  //        never blocks the Flutter UI thread (which was causing the watchdog
+  //        to kill the app at high K values).
+  //
+  // Fix 2: The isolate entry-point (_benchmarkEntry) intentionally does NOT
+  //        store result.root anywhere. At K=7 each getBestMove call can
+  //        allocate ~800 K Node objects; keeping them alive via lastMinimaxTree
+  //        prevented the GC from reclaiming memory between moves, eventually
+  //        causing an OOM crash. Discarding the root immediately lets the GC
+  //        collect each tree before the next move is computed.
+
   static Future<Map<String, dynamic>> runBenchmarkGame(
     Algorithm algo,
     int k,
   ) async {
-    final ctrl = GameController(algorithm: algo, kDepth: k);
+    // Pack the two primitive arguments into a list — Isolate.run receives a
+    // single argument, and closures that capture non-primitive objects are not
+    // guaranteed to be sendable across isolate boundaries.
+    return await Isolate.run(() => _benchmarkEntry([algo.index, k]));
+  }
+
+  // Isolate entry-point. Receives [algoIndex, k] as a plain List<int>.
+  static Map<String, dynamic> _benchmarkEntry(List<int> args) {
+    final algo = Algorithm.values[args[0]];
+    final k    = args[1];
+
+    final ctrl      = GameController(algorithm: algo, kDepth: k);
     final stopwatch = Stopwatch()..start();
-    int totalNodes = 0;
-    int moves = 0;
+    int totalNodes  = 0;
+    int moves       = 0;
 
     while (!ctrl.isGameOver) {
       final result = ctrl.ai.getBestMove(ctrl.board, ctrl.currentPlayer);
+
       totalNodes += result.nodesExpanded;
-      ctrl.lastMinimaxTree = result.root;
+
+      // Fix 2: do NOT assign result.root — let the tree be GC'd immediately.
+      // ctrl.lastMinimaxTree = result.root; ← removed
+
       ctrl.makeMove(result.column);
       moves++;
-      await Future.delayed(Duration.zero); // ADD THIS
+
+      // Note: Future.delayed / await cannot be used in a synchronous isolate
+      // entry-point. The Isolate itself runs on its own thread, so there is no
+      // need to yield; the UI thread remains responsive automatically.
     }
 
     stopwatch.stop();

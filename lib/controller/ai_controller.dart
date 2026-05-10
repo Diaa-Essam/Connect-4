@@ -79,6 +79,7 @@ class AiController {
         } else {
             if (val < bestVal) { bestVal = val; bestCol = col; }
             if (val < beta) beta = val;
+            if (val > alpha) alpha = val; // Bug 3 fix: alpha must be updated for player 2 root so children can be pruned correctly
           }
       }
       root.utility = bestVal;

@@ -19,6 +19,9 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
   bool isRunning = false;
   Duration totalComputeTime = Duration.zero;
   int totalNodes = 0;
+  // Bug 4 fix: incremented on every (re)start so any older loop iteration
+  // detects it is stale and exits, preventing two concurrent game loops.
+  int _loopGeneration = 0;
 
   @override
   void initState() {
@@ -28,11 +31,18 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
   }
 
   Future<void> _startGame() async {
+    // Bug 4 fix: capture the generation for this run; if _loopGeneration
+    // changes (because Replay was pressed), this loop will self-exit.
+    final int myGeneration = ++_loopGeneration;
+
     setState(() => isRunning = true);
     totalComputeTime = Duration.zero;
     totalNodes = 0;
 
     while (!controller.isGameOver) {
+      // Bug 4 fix: bail out if a newer loop has been started
+      if (_loopGeneration != myGeneration) return;
+
       final sw = Stopwatch()..start();
       final result = controller.ai.getBestMove(controller.board, controller.currentPlayer);
       sw.stop();
@@ -43,21 +53,29 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
       controller.lastNodesExpanded = result.nodesExpanded;
       controller.lastAiTime = result.elapsedTime;
 
-      // Print tree each turn as required
       print("=== AI vs AI TURN (Player ${controller.currentPlayer}) ===");
-      // tree printed inside getBestMove already
 
       controller.makeMove(result.column);
+
+      // Bug 2 fix: guard setState after synchronous work too, in case the
+      // widget was disposed between getBestMove returning and here.
+      if (!mounted) return;
       setState(() {});
 
       // Visual delay so user can watch
       await Future.delayed(const Duration(milliseconds: 600));
+
+      // Bug 2 fix: widget may have been disposed during the delay
+      if (!mounted) return;
     }
 
+    // Bug 4 fix: a stale loop must not update state or show the dialog
+    if (_loopGeneration != myGeneration) return;
+
+    // Bug 2 fix: check mounted before calling setState and showDialog
+    if (!mounted) return;
     setState(() => isRunning = false);
 
-    if (!mounted) return; // ADD THIS
-    // Show final stats
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -78,6 +96,8 @@ class _AiVsAiScreenState extends State<AiVsAiScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
+              // Bug 4 fix: resetGame first, then _startGame increments
+              // _loopGeneration, causing any still-running old loop to exit.
               controller.resetGame();
               _startGame();
             },
